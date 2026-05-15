@@ -1,0 +1,44 @@
+{% extends "fraud_app/base.html" %}
+
+{% block title %}History | FraudDesk{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Audit trail</p>
+    <h1>Prediction history</h1>
+    <p>Recent model outputs stored in the local SQLite database.</p>
+</section>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Prediction</th>
+                    <th>Fraud probability</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in transactions %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>
+                        <span class="risk-pill {% if item.prediction %}danger{% else %}safe{% endif %}">
+                            {% if item.prediction %}Fraud{% else %}Legitimate{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ item.probability|floatformat:"4" }}</td>
+                    <td>{{ item.timestamp }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="muted">No predictions have been saved yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

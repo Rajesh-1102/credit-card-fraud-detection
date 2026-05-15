@@ -1,0 +1,49 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Fraud Detection{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fraud_app/styles.css' %}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="{% url 'fraud_app:dashboard' %}">
+                <span class="brand-mark">FD</span>
+                <span>
+                    <strong>FraudDesk</strong>
+                    <small>ML Risk Console</small>
+                </span>
+            </a>
+            <nav class="nav-list" aria-label="Primary navigation">
+                <a class="{% if active_page == 'dashboard' %}active{% endif %}" href="{% url 'fraud_app:dashboard' %}">
+                    <span class="nav-icon dashboard-icon"></span>
+                    Dashboard
+                </a>
+                <a class="{% if active_page == 'predict' %}active{% endif %}" href="{% url 'fraud_app:predict' %}">
+                    <span class="nav-icon predict-icon"></span>
+                    Predict
+                </a>
+                <a class="{% if active_page == 'history' %}active{% endif %}" href="{% url 'fraud_app:history' %}">
+                    <span class="nav-icon history-icon"></span>
+                    History
+                </a>
+            </nav>
+            <div class="sidebar-note">
+                <span class="status-dot"></span>
+                Local model artifacts connected
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

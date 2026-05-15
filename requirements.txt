@@ -1,6 +1,9 @@
-streamlit
+Django
 pandas
-plotly
+numpy
 scikit-learn
 xgboost
 joblib
+imbalanced-learn
+matplotlib
+seaborn
