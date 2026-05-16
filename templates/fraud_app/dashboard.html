@@ -6,12 +6,15 @@
 <section class="hero-panel">
     <div>
         <p class="eyebrow">Credit card fraud detection</p>
-        <h1>Real-time risk monitoring dashboard</h1>
+        <h1>Transaction risk command center</h1>
         <p class="hero-copy">
-            Track fraud patterns, review model outputs, and inspect high-value transactions from the local ML pipeline.
+            Monitor fraud volume, inspect model activity, and move quickly from dataset patterns to live transaction scoring.
         </p>
     </div>
-    <a class="primary-action" href="{% url 'fraud_app:predict' %}">Run prediction</a>
+    <div class="hero-actions">
+        <a class="primary-action" href="{% url 'fraud_app:predict' %}">Run prediction</a>
+        <a class="secondary-action glass-action" href="{% url 'fraud_app:history' %}">View history</a>
+    </div>
 </section>
 
 {% if setup_error %}
@@ -72,6 +75,11 @@
         <strong>{{ metrics.fraud_amount|floatformat:"0" }}</strong>
         <small>Combined amount flagged as fraud</small>
     </article>
+    <article class="metric-card accent-orange">
+        <span class="metric-label">Average amount</span>
+        <strong>{{ metrics.avg_amount|floatformat:"2" }}</strong>
+        <small>Mean transaction value in this view</small>
+    </article>
 </section>
 
 <section class="dashboard-grid">
@@ -112,6 +120,10 @@
                 <span>Fraud</span>
                 <strong>{{ metrics.prediction_counts.1 }}</strong>
             </div>
+        </div>
+        <div class="assistant-preview">
+            <span>AI assistant idea</span>
+            <p>Next phase: explain why a prediction is risky and suggest analyst review steps.</p>
         </div>
         <div class="activity-list">
             {% for transaction in recent_predictions %}

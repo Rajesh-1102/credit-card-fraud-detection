@@ -8,6 +8,10 @@ A Django-based web application for detecting fraudulent credit card transactions
 - Transaction fraud prediction form
 - Prediction history stored in SQLite
 - JSON API endpoint for transaction scoring
+- Login and logout system using Django authentication
+- Light and dark dashboard theme toggle
+- Risk category and analyst guidance after prediction
+- History filter for fraud and legitimate predictions
 - Machine learning pipeline for preprocessing, training, and evaluation
 - Django frontend templates with custom styling
 
@@ -59,6 +63,18 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+4. Apply database migrations:
+
+```powershell
+python manage.py migrate
+```
+
+5. Create a login user:
+
+```powershell
+python manage.py createsuperuser
+```
+
 ## Run the Django App
 
 Start the development server:
@@ -73,12 +89,16 @@ Open the app in your browser:
 http://127.0.0.1:8000/
 ```
 
+Login with the username and password created using `createsuperuser`.
+
 ## Pages
 
 - `/` - Fraud monitoring dashboard
 - `/predict/` - Transaction scoring form
 - `/history/` - Saved prediction history
 - `/api/predict/` - JSON prediction API
+
+The prediction page includes one-click sample loading for legitimate, fraud, and high-amount transactions. This helps fill all model feature values without typing them manually.
 
 ## API Example
 

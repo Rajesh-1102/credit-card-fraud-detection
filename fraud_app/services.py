@@ -77,8 +77,26 @@ def predict_transaction(payload, save=True):
         "prediction": prediction,
         "label": "Fraud" if prediction else "Legitimate",
         "probability": probability,
+        "risk_category": risk_category(probability),
+        "risk_message": risk_message(prediction, probability),
         "features": features,
     }
+
+
+def risk_category(probability):
+    if probability >= 0.75:
+        return "High risk"
+    if probability >= 0.35:
+        return "Medium risk"
+    return "Low risk"
+
+
+def risk_message(prediction, probability):
+    if prediction:
+        return "Review this transaction before approval and verify customer identity."
+    if probability >= 0.35:
+        return "Prediction is legitimate, but the score is elevated enough for analyst review."
+    return "Transaction pattern looks consistent with legitimate activity."
 
 
 def _dataset_path():
@@ -156,18 +174,28 @@ def save_transaction(prediction, probability):
         conn.commit()
 
 
-def get_recent_transactions(limit=8):
+def get_recent_transactions(limit=8, prediction_filter="all"):
     ensure_transaction_table()
+    where_clause = ""
+    params = []
+    if prediction_filter == "fraud":
+        where_clause = "WHERE prediction = ?"
+        params.append(1)
+    elif prediction_filter == "legitimate":
+        where_clause = "WHERE prediction = ?"
+        params.append(0)
+    params.append(limit)
     with sqlite3.connect(DB_PATH) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(
-            """
+            f"""
             SELECT id, prediction, probability, timestamp
             FROM transactions
+            {where_clause}
             ORDER BY id DESC
             LIMIT ?
             """,
-            (limit,),
+            params,
         ).fetchall()
     return [dict(row) for row in rows]
 

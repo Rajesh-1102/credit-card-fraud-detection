@@ -36,14 +36,63 @@
             </nav>
             <div class="sidebar-note">
                 <span class="status-dot"></span>
-                Local model artifacts connected
+                Authenticated model console
             </div>
         </aside>
 
         <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <span class="topbar-label">Risk operations</span>
+                    <strong>Credit fraud intelligence</strong>
+                </div>
+                <div class="topbar-actions">
+                    <button class="theme-toggle" type="button" aria-label="Toggle light and dark theme" data-theme-toggle>
+                        <span class="theme-icon">N</span>
+                        <span data-theme-label>Night</span>
+                    </button>
+                    {% if request.user.is_authenticated %}
+                    <div class="user-chip">
+                        <span>{{ request.user.username|first|upper }}</span>
+                        <strong>{{ request.user.username }}</strong>
+                    </div>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="secondary-action compact-button" type="submit">Logout</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </header>
             {% block content %}{% endblock %}
         </main>
     </div>
+    <script>
+    (function () {
+        const storageKey = "frauddesk-theme";
+        const root = document.documentElement;
+        const button = document.querySelector("[data-theme-toggle]");
+        const label = document.querySelector("[data-theme-label]");
+        const icon = document.querySelector(".theme-icon");
+
+        function applyTheme(theme) {
+            root.dataset.theme = theme;
+            if (label) {
+                label.textContent = theme === "dark" ? "Light" : "Night";
+            }
+            if (icon) {
+                icon.textContent = theme === "dark" ? "L" : "N";
+            }
+            localStorage.setItem(storageKey, theme);
+        }
+
+        applyTheme(localStorage.getItem(storageKey) || "light");
+        if (button) {
+            button.addEventListener("click", function () {
+                applyTheme(root.dataset.theme === "dark" ? "light" : "dark");
+            });
+        }
+    }());
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

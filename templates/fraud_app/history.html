@@ -9,6 +9,27 @@
     <p>Recent model outputs stored in the local SQLite database.</p>
 </section>
 
+<section class="panel filter-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">History filters</p>
+            <h2>Review saved predictions</h2>
+        </div>
+    </div>
+    <form method="get" class="history-filter-form">
+        <label>
+            <span>Prediction type</span>
+            <select name="prediction">
+                <option value="all" {% if prediction_filter == "all" %}selected{% endif %}>All predictions</option>
+                <option value="fraud" {% if prediction_filter == "fraud" %}selected{% endif %}>Fraud only</option>
+                <option value="legitimate" {% if prediction_filter == "legitimate" %}selected{% endif %}>Legitimate only</option>
+            </select>
+        </label>
+        <button type="submit" class="primary-action">Apply</button>
+        <a class="secondary-action" href="{% url 'fraud_app:history' %}">Reset</a>
+    </form>
+</section>
+
 <section class="panel">
     <div class="table-wrap">
         <table>

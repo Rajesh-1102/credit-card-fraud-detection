@@ -1,6 +1,7 @@
 import json
 
 from django.http import FileResponse, Http404, JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -17,6 +18,7 @@ from .services import (
 )
 
 
+@login_required
 def dashboard(request):
     context = {"active_page": "dashboard"}
     try:
@@ -27,6 +29,7 @@ def dashboard(request):
     return render(request, "fraud_app/dashboard.html", context)
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def predict(request):
     result = None
@@ -72,18 +75,22 @@ def predict(request):
     )
 
 
+@login_required
 def history(request):
+    prediction_filter = request.GET.get("prediction", "all")
     return render(
         request,
         "fraud_app/history.html",
         {
             "active_page": "history",
-            "transactions": get_recent_transactions(limit=50),
+            "transactions": get_recent_transactions(limit=50, prediction_filter=prediction_filter),
+            "prediction_filter": prediction_filter,
         },
     )
 
 
 @csrf_exempt
+@login_required
 @require_http_methods(["POST"])
 def predict_api(request):
     try:
@@ -96,6 +103,7 @@ def predict_api(request):
     return JsonResponse(result)
 
 
+@login_required
 def plot_image(request, name):
     path = get_plot_path(name)
     if not path:

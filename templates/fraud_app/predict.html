@@ -26,6 +26,11 @@
         <span>Fraud probability</span>
         <strong>{{ result.probability|floatformat:"4" }}</strong>
     </div>
+    <div>
+        <span>Risk category</span>
+        <strong>{{ result.risk_category }}</strong>
+    </div>
+    <p>{{ result.risk_message }}</p>
 </section>
 {% endif %}
 
