@@ -269,8 +269,9 @@ a {
     border: 0;
     border-radius: 28px;
     background:
-        linear-gradient(120deg, rgba(15, 23, 42, 0.9), rgba(37, 99, 235, 0.74)),
-        linear-gradient(135deg, var(--blue), var(--purple));
+        radial-gradient(circle at 76% 20%, rgba(255, 255, 255, 0.18), transparent 22%),
+        linear-gradient(120deg, rgba(15, 23, 42, 0.96), rgba(37, 99, 235, 0.76)),
+        linear-gradient(135deg, #0f2348, #3156ea);
     overflow: hidden;
 }
 
@@ -301,6 +302,101 @@ a {
     color: rgba(255, 255, 255, 0.78);
     font-size: 1rem;
     line-height: 1.65;
+}
+
+.hero-visual {
+    position: relative;
+    flex: 0 0 260px;
+    height: 190px;
+}
+
+.hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: 18px 18px 0 0;
+    border-radius: 42% 58% 48% 52%;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.credit-card-visual {
+    position: absolute;
+    top: 28px;
+    left: 14px;
+    width: 176px;
+    height: 112px;
+    padding: 18px;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: 18px;
+    background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.95), rgba(37, 99, 235, 0.88)),
+        linear-gradient(135deg, #15213a, #3156ea);
+    box-shadow: 0 26px 42px rgba(0, 0, 0, 0.26);
+    transform: rotate(-10deg);
+}
+
+.chip {
+    display: block;
+    width: 34px;
+    height: 24px;
+    margin-bottom: 18px;
+    border-radius: 6px;
+    background:
+        linear-gradient(90deg, transparent 45%, rgba(255, 255, 255, 0.42) 45% 55%, transparent 55%),
+        linear-gradient(#f8c76a, #d99a28);
+}
+
+.card-line {
+    display: block;
+    width: 82px;
+    height: 6px;
+    margin-bottom: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.card-line.short {
+    width: 54px;
+}
+
+.credit-card-visual strong {
+    display: block;
+    margin-top: 9px;
+    font-size: 0.85rem;
+}
+
+.cash-visual {
+    position: absolute;
+    right: 28px;
+    bottom: 20px;
+    display: grid;
+    place-items: center;
+    width: 142px;
+    height: 76px;
+    color: #0f7a43;
+    font-size: 2.8rem;
+    font-weight: 800;
+    border: 10px solid rgba(22, 163, 74, 0.2);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #dff7e8, #98d8ac);
+    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.18);
+    transform: rotate(11deg);
+}
+
+.alert-visual {
+    position: absolute;
+    top: 40px;
+    right: 24px;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    color: white;
+    font-size: 1.7rem;
+    font-weight: 900;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7a18, #e11d48);
+    box-shadow: 0 14px 28px rgba(225, 29, 72, 0.28);
 }
 
 .page-heading {
@@ -420,6 +516,40 @@ button.primary-action {
     grid-template-columns: 1.25fr 1fr;
     gap: 18px;
     margin-bottom: 18px;
+}
+
+.donut-layout {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 150px;
+    gap: 12px;
+    align-items: center;
+}
+
+.chart-legend {
+    display: grid;
+    gap: 12px;
+    color: var(--muted);
+    font-weight: 800;
+}
+
+.chart-legend span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.safe-dot {
+    background: var(--green);
+}
+
+.danger-dot {
+    background: var(--red);
 }
 
 .filter-panel {
@@ -876,6 +1006,10 @@ summary {
     .sample-select-form {
         grid-template-columns: 1fr;
     }
+
+    .hero-visual {
+        display: none;
+    }
 }
 
 @media (max-width: 720px) {
@@ -902,6 +1036,14 @@ summary {
 
     .filter-actions {
         flex-direction: column;
+    }
+
+    .hero-actions {
+        justify-content: flex-start;
+    }
+
+    .donut-layout {
+        grid-template-columns: 1fr;
     }
 
     .topbar {

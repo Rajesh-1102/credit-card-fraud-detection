@@ -6,10 +6,20 @@
 <section class="hero-panel">
     <div>
         <p class="eyebrow">Credit card fraud detection</p>
-        <h1>Transaction risk command center</h1>
+        <h1>Credit Card Fraud Detection Analysis</h1>
         <p class="hero-copy">
-            Monitor fraud volume, inspect model activity, and move quickly from dataset patterns to live transaction scoring.
+            Analyze transaction patterns, monitor fraud risk, and review model predictions from a secure ML dashboard.
         </p>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+        <div class="credit-card-visual">
+            <span class="chip"></span>
+            <span class="card-line short"></span>
+            <span class="card-line"></span>
+            <strong>**** 1234</strong>
+        </div>
+        <div class="cash-visual">$</div>
+        <div class="alert-visual">!</div>
     </div>
     <div class="hero-actions">
         <a class="primary-action" href="{% url 'fraud_app:predict' %}">Run prediction</a>
@@ -83,6 +93,32 @@
 </section>
 
 <section class="dashboard-grid">
+    <article class="panel chart-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Class balance</p>
+                <h2>Fraud vs legitimate</h2>
+            </div>
+        </div>
+        <div class="donut-layout">
+            <canvas id="classChart" height="210"></canvas>
+            <div class="chart-legend">
+                <span><i class="legend-dot safe-dot"></i> Legitimate</span>
+                <span><i class="legend-dot danger-dot"></i> Fraud</span>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel chart-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Trend</p>
+                <h2>Transaction volume over time</h2>
+            </div>
+        </div>
+        <canvas id="trendChart" height="150"></canvas>
+    </article>
+
     <article class="panel chart-panel">
         <div class="panel-heading">
             <div>
@@ -190,12 +226,18 @@
 
 {{ metrics.hourly_fraud|json_script:"hourly-data" }}
 {{ metrics.amount_distribution|json_script:"amount-data" }}
+{{ metrics.class_distribution|json_script:"class-data" }}
+{{ metrics.transaction_trend|json_script:"trend-data" }}
 {% endif %}
 {% endblock %}
 
 {% block scripts %}
 {% if not setup_error %}
 <script>
+function chartColor(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 function drawBarChart(canvasId, labels, values, colors) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext("2d");
@@ -215,7 +257,7 @@ function drawBarChart(canvasId, labels, values, colors) {
         ctx.fillStyle = gradient;
         ctx.roundRect(x, y, barWidth, barHeight, 8);
         ctx.fill();
-        ctx.fillStyle = "#667085";
+        ctx.fillStyle = chartColor("--muted");
         ctx.font = `${11 * window.devicePixelRatio}px Inter`;
         ctx.textAlign = "center";
         if (labels.length <= 12 || index % 3 === 0) {
@@ -224,9 +266,112 @@ function drawBarChart(canvasId, labels, values, colors) {
     });
 }
 
+function drawLineChart(canvasId, labels, values) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext("2d");
+    const ratio = window.devicePixelRatio;
+    const width = canvas.width = canvas.offsetWidth * ratio;
+    const height = canvas.height = canvas.offsetHeight * ratio;
+    const max = Math.max(...values, 1);
+    const padding = 32 * ratio;
+    const plotWidth = width - padding * 2;
+    const plotHeight = height - padding * 1.6;
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = chartColor("--line");
+    ctx.lineWidth = 1 * ratio;
+    for (let i = 0; i < 4; i += 1) {
+        const y = padding + (plotHeight / 3) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
+        ctx.stroke();
+    }
+
+    const points = values.map((value, index) => {
+        const x = padding + (plotWidth / Math.max(values.length - 1, 1)) * index;
+        const y = padding + plotHeight - (value / max) * plotHeight;
+        return {x, y};
+    });
+
+    const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
+    gradient.addColorStop(0, "rgba(37, 99, 235, 0.28)");
+    gradient.addColorStop(1, "rgba(37, 99, 235, 0)");
+    ctx.beginPath();
+    points.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y));
+    ctx.lineTo(points[points.length - 1].x, height - padding);
+    ctx.lineTo(points[0].x, height - padding);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    ctx.beginPath();
+    points.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y));
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 3 * ratio;
+    ctx.stroke();
+
+    points.forEach((point, index) => {
+        if (index % 2 === 0 || index === points.length - 1) {
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, 4 * ratio, 0, Math.PI * 2);
+            ctx.fillStyle = "#0ea5e9";
+            ctx.fill();
+        }
+    });
+
+    ctx.fillStyle = chartColor("--muted");
+    ctx.font = `${11 * ratio}px Inter`;
+    ctx.textAlign = "center";
+    labels.forEach((label, index) => {
+        if (index % 2 === 0 || index === labels.length - 1) {
+            ctx.fillText(label, points[index].x, height - 8 * ratio);
+        }
+    });
+}
+
+function drawDonutChart(canvasId, values) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext("2d");
+    const ratio = window.devicePixelRatio;
+    const width = canvas.width = canvas.offsetWidth * ratio;
+    const height = canvas.height = canvas.offsetHeight * ratio;
+    const total = values.reduce((sum, value) => sum + value, 0) || 1;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radius = Math.min(width, height) * 0.36;
+    const innerRadius = radius * 0.62;
+    let startAngle = -Math.PI / 2;
+    const colors = ["#16a34a", "#e11d48"];
+
+    ctx.clearRect(0, 0, width, height);
+    values.forEach((value, index) => {
+        const slice = (value / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, startAngle, startAngle + slice);
+        ctx.arc(centerX, centerY, innerRadius, startAngle + slice, startAngle, true);
+        ctx.closePath();
+        ctx.fillStyle = colors[index];
+        ctx.fill();
+        startAngle += slice;
+    });
+
+    ctx.fillStyle = chartColor("--ink");
+    ctx.font = `800 ${22 * ratio}px Inter`;
+    ctx.textAlign = "center";
+    ctx.fillText(`${((values[1] / total) * 100).toFixed(2)}%`, centerX, centerY - 2 * ratio);
+    ctx.fillStyle = chartColor("--muted");
+    ctx.font = `700 ${11 * ratio}px Inter`;
+    ctx.fillText("fraud rate", centerX, centerY + 18 * ratio);
+}
+
 const hourly = JSON.parse(document.getElementById("hourly-data").textContent);
 const amounts = JSON.parse(document.getElementById("amount-data").textContent);
+const classes = JSON.parse(document.getElementById("class-data").textContent);
+const trend = JSON.parse(document.getElementById("trend-data").textContent);
 
+drawDonutChart("classChart", classes.map(item => item.count));
+drawLineChart("trendChart", trend.map(item => item.label), trend.map(item => item.count));
 drawBarChart(
     "hourlyChart",
     hourly.map(item => item.hour),
@@ -240,8 +385,19 @@ drawBarChart(
     ["#36d1dc", "#5b86e5"]
 );
 window.addEventListener("resize", () => {
+    drawDonutChart("classChart", classes.map(item => item.count));
+    drawLineChart("trendChart", trend.map(item => item.label), trend.map(item => item.count));
     drawBarChart("hourlyChart", hourly.map(item => item.hour), hourly.map(item => item.count), ["#ff5f6d", "#ffc371"]);
     drawBarChart("amountChart", amounts.map(item => item.label), amounts.map(item => item.count), ["#36d1dc", "#5b86e5"]);
+});
+
+document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
+    requestAnimationFrame(() => {
+        drawDonutChart("classChart", classes.map(item => item.count));
+        drawLineChart("trendChart", trend.map(item => item.label), trend.map(item => item.count));
+        drawBarChart("hourlyChart", hourly.map(item => item.hour), hourly.map(item => item.count), ["#ff5f6d", "#ffc371"]);
+        drawBarChart("amountChart", amounts.map(item => item.label), amounts.map(item => item.count), ["#36d1dc", "#5b86e5"]);
+    });
 });
 </script>
 {% endif %}

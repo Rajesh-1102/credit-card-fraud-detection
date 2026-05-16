@@ -251,6 +251,11 @@ def load_dashboard_metrics(filters=None):
         for label, count in amount_bins.value_counts(sort=False).items()
     ]
 
+    class_distribution = [
+        {"label": "Legitimate", "count": legitimate},
+        {"label": "Fraud", "count": fraud},
+    ]
+
     hour_series = (df["Time"] // 3600).astype(int) % 24
     fraud_by_hour = (
         df.loc[df["Class"] == 1]
@@ -260,6 +265,12 @@ def load_dashboard_metrics(filters=None):
         .reindex(range(24), fill_value=0)
     )
     hourly_fraud = [{"hour": int(hour), "count": int(count)} for hour, count in fraud_by_hour.items()]
+
+    time_bins = pandas.cut(df["Time"], bins=12, duplicates="drop")
+    transaction_trend = [
+        {"label": f"T{index + 1}", "count": int(count)}
+        for index, count in enumerate(time_bins.value_counts(sort=False).tolist())
+    ]
 
     top_transactions = (
         df.sort_values("Amount", ascending=False)
@@ -276,8 +287,10 @@ def load_dashboard_metrics(filters=None):
         "fraud_rate": fraud_rate,
         "fraud_amount": fraud_amount,
         "avg_amount": avg_amount,
+        "class_distribution": class_distribution,
         "amount_distribution": amount_distribution,
         "hourly_fraud": hourly_fraud,
+        "transaction_trend": transaction_trend,
         "top_transactions": top_transactions,
         "prediction_counts": prediction_counts,
         "filters": {
