@@ -66,27 +66,42 @@
 
 <section class="kpi-grid">
     <article class="metric-card accent-blue">
-        <span class="metric-label">Transactions</span>
+        <div class="metric-topline">
+            <span class="metric-label">Transactions</span>
+            <span class="metric-icon transactions-icon" aria-hidden="true"></span>
+        </div>
         <strong>{{ metrics.total|floatformat:"0" }}</strong>
         <small>Rows analyzed from the dataset</small>
     </article>
     <article class="metric-card accent-red">
-        <span class="metric-label">Fraud cases</span>
+        <div class="metric-topline">
+            <span class="metric-label">Fraud cases</span>
+            <span class="metric-icon fraud-icon" aria-hidden="true"></span>
+        </div>
         <strong>{{ metrics.fraud|floatformat:"0" }}</strong>
         <small>{{ metrics.fraud_rate|floatformat:"4" }} fraud ratio</small>
     </article>
     <article class="metric-card accent-green">
-        <span class="metric-label">Legitimate</span>
+        <div class="metric-topline">
+            <span class="metric-label">Legitimate</span>
+            <span class="metric-icon legitimate-icon" aria-hidden="true"></span>
+        </div>
         <strong>{{ metrics.legitimate|floatformat:"0" }}</strong>
         <small>Clean transactions in source data</small>
     </article>
     <article class="metric-card accent-purple">
-        <span class="metric-label">Fraud amount</span>
+        <div class="metric-topline">
+            <span class="metric-label">Fraud amount</span>
+            <span class="metric-icon amount-icon" aria-hidden="true"></span>
+        </div>
         <strong>{{ metrics.fraud_amount|floatformat:"0" }}</strong>
         <small>Combined amount flagged as fraud</small>
     </article>
     <article class="metric-card accent-orange">
-        <span class="metric-label">Average amount</span>
+        <div class="metric-topline">
+            <span class="metric-label">Average amount</span>
+            <span class="metric-icon average-icon" aria-hidden="true"></span>
+        </div>
         <strong>{{ metrics.avg_amount|floatformat:"2" }}</strong>
         <small>Mean transaction value in this view</small>
     </article>
@@ -158,8 +173,9 @@
             </div>
         </div>
         <div class="assistant-preview">
-            <span>AI assistant idea</span>
-            <p>Next phase: explain why a prediction is risky and suggest analyst review steps.</p>
+            <span>AI Risk Assistant</span>
+            <p>Use the assistant to explain prediction risk, dashboard charts, and analyst review steps.</p>
+            <a href="{% url 'fraud_app:assistant' %}">Open assistant</a>
         </div>
         <div class="activity-list">
             {% for transaction in recent_predictions %}

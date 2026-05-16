@@ -1,0 +1,76 @@
+{% extends "fraud_app/base.html" %}
+
+{% block title %}AI Assistant | FraudDesk{% endblock %}
+
+{% block content %}
+<section class="page-heading assistant-heading">
+    <p class="eyebrow">AI risk assistant</p>
+    <h1>Explain fraud predictions and dashboard signals</h1>
+    <p>
+        Use this assistant area to understand model output, risk categories, chart patterns, and what an analyst should check next.
+    </p>
+</section>
+
+<section class="assistant-grid">
+    <article class="panel assistant-main">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Assistant purpose</p>
+                <h2>What it helps with</h2>
+            </div>
+        </div>
+        <div class="assistant-message">
+            <span class="assistant-avatar">AI</span>
+            <div>
+                <strong>FraudDesk Assistant</strong>
+                <p>
+                    I help explain whether a transaction is low, medium, or high risk, summarize fraud probability,
+                    and suggest review actions such as identity verification or manual approval checks.
+                </p>
+            </div>
+        </div>
+        <div class="assistant-message analyst">
+            <span class="assistant-avatar analyst-avatar">U</span>
+            <div>
+                <strong>Analyst question</strong>
+                <p>Why was this transaction marked high risk?</p>
+            </div>
+        </div>
+        <div class="assistant-message">
+            <span class="assistant-avatar">AI</span>
+            <div>
+                <strong>Assistant response</strong>
+                <p>
+                    The fraud probability is elevated, so the transaction should be reviewed before approval.
+                    Check amount, unusual feature patterns, and recent fraud activity before making a decision.
+                </p>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel assistant-side">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">When to use</p>
+                <h2>Best use cases</h2>
+            </div>
+        </div>
+        <ul class="assistant-list">
+            <li>Explain a prediction result after scoring a transaction.</li>
+            <li>Understand fraud rate, amount distribution, and hourly fraud patterns.</li>
+            <li>Prepare simple project-demo explanations for your dashboard.</li>
+            <li>Guide manual review when fraud probability is medium or high.</li>
+        </ul>
+    </article>
+</section>
+
+<section class="assistant-card-grid">
+    {% for card in assistant_cards %}
+    <article class="panel assistant-card">
+        <p class="eyebrow">{{ card.title }}</p>
+        <h2>{{ card.prompt }}</h2>
+        <p>{{ card.response }}</p>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

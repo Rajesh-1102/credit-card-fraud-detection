@@ -89,6 +89,43 @@ def history(request):
     )
 
 
+@login_required
+def assistant(request):
+    return render(
+        request,
+        "fraud_app/assistant.html",
+        {
+            "active_page": "assistant",
+            "assistant_cards": [
+                {
+                    "title": "Prediction explanation",
+                    "prompt": "Why is this transaction risky?",
+                    "response": (
+                        "The assistant explains the fraud probability, risk category, "
+                        "and the analyst action needed after scoring a transaction."
+                    ),
+                },
+                {
+                    "title": "Dashboard guidance",
+                    "prompt": "What should I check first?",
+                    "response": (
+                        "Start with fraud rate, fraud-by-hour pattern, amount distribution, "
+                        "and recent high-probability predictions."
+                    ),
+                },
+                {
+                    "title": "Model interpretation",
+                    "prompt": "How do I explain the model output?",
+                    "response": (
+                        "Use simple language: legitimate or fraud label, probability score, "
+                        "and whether manual verification is recommended."
+                    ),
+                },
+            ],
+        },
+    )
+
+
 @csrf_exempt
 @login_required
 @require_http_methods(["POST"])

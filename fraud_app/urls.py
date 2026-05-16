@@ -8,6 +8,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("predict/", views.predict, name="predict"),
     path("history/", views.history, name="history"),
+    path("assistant/", views.assistant, name="assistant"),
     path("api/predict/", views.predict_api, name="predict_api"),
     path("plots/<str:name>/", views.plot_image, name="plot_image"),
 ]

@@ -143,6 +143,10 @@ a {
     background: linear-gradient(135deg, var(--green), var(--cyan));
 }
 
+.assistant-icon {
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+}
+
 .sidebar-note {
     position: absolute;
     bottom: 24px;
@@ -459,6 +463,89 @@ button.primary-action {
     background: var(--shell);
     border-radius: 22px;
     overflow: hidden;
+}
+
+.metric-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.metric-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 900;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+}
+
+.metric-icon::before {
+    content: "";
+    position: absolute;
+    inset: 11px;
+    border: 2px solid currentColor;
+    border-radius: 6px;
+}
+
+.transactions-icon::before {
+    border-radius: 4px;
+    box-shadow: 0 -6px 0 -4px currentColor, 0 6px 0 -4px currentColor;
+}
+
+.fraud-icon {
+    background: linear-gradient(135deg, var(--red), var(--orange));
+}
+
+.fraud-icon::before {
+    content: "!";
+    inset: auto;
+    border: 0;
+    font-size: 1.4rem;
+}
+
+.legitimate-icon {
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+}
+
+.legitimate-icon::before {
+    width: 18px;
+    height: 10px;
+    border-top: 0;
+    border-right: 0;
+    border-radius: 0;
+    transform: rotate(-45deg);
+}
+
+.amount-icon {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+}
+
+.amount-icon::before {
+    content: "$";
+    inset: auto;
+    border: 0;
+    font-size: 1.2rem;
+}
+
+.average-icon {
+    background: linear-gradient(135deg, var(--orange), var(--red));
+}
+
+.average-icon::before {
+    width: 20px;
+    height: 14px;
+    border-top: 0;
+    border-left: 0;
+    border-radius: 0;
+    transform: skew(-18deg);
 }
 
 .metric-card::before {
@@ -912,6 +999,84 @@ summary {
     line-height: 1.5;
 }
 
+.assistant-preview a {
+    display: inline-flex;
+    margin-top: 12px;
+    color: var(--cyan);
+    font-weight: 800;
+}
+
+.assistant-grid,
+.assistant-card-grid {
+    display: grid;
+    gap: 18px;
+}
+
+.assistant-grid {
+    grid-template-columns: 1.25fr 0.75fr;
+}
+
+.assistant-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.assistant-main,
+.assistant-side,
+.assistant-card {
+    margin-bottom: 0;
+}
+
+.assistant-message {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding: 16px;
+    margin-top: 12px;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+}
+
+.assistant-message p,
+.assistant-card p,
+.assistant-list {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.assistant-message p,
+.assistant-card p {
+    margin-bottom: 0;
+}
+
+.assistant-avatar {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 900;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+}
+
+.analyst-avatar {
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+}
+
+.assistant-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding-left: 18px;
+}
+
+.assistant-card h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
 .history-filter-form {
     display: grid;
     grid-template-columns: minmax(220px, 1fr) auto auto;
@@ -998,6 +1163,8 @@ summary {
     .kpi-grid,
     .dashboard-grid,
     .plot-grid,
+    .assistant-grid,
+    .assistant-card-grid,
     .filter-form,
     .sample-button-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1027,6 +1194,8 @@ summary {
     .kpi-grid,
     .dashboard-grid,
     .plot-grid,
+    .assistant-grid,
+    .assistant-card-grid,
     .form-grid,
     .form-grid.compact,
     .filter-form,

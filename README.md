@@ -12,6 +12,7 @@ A Django-based web application for detecting fraudulent credit card transactions
 - Light and dark dashboard theme toggle
 - Risk category and analyst guidance after prediction
 - History filter for fraud and legitimate predictions
+- AI risk assistant page for explaining predictions and dashboard signals
 - Machine learning pipeline for preprocessing, training, and evaluation
 - Django frontend templates with custom styling
 
@@ -96,6 +97,7 @@ Login with the username and password created using `createsuperuser`.
 - `/` - Fraud monitoring dashboard
 - `/predict/` - Transaction scoring form
 - `/history/` - Saved prediction history
+- `/assistant/` - AI risk explanation assistant
 - `/api/predict/` - JSON prediction API
 
 The prediction page includes one-click sample loading for legitimate, fraud, and high-amount transactions. This helps fill all model feature values without typing them manually.

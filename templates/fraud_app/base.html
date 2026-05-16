@@ -33,6 +33,10 @@
                     <span class="nav-icon history-icon"></span>
                     History
                 </a>
+                <a class="{% if active_page == 'assistant' %}active{% endif %}" href="{% url 'fraud_app:assistant' %}">
+                    <span class="nav-icon assistant-icon"></span>
+                    AI Assistant
+                </a>
             </nav>
             <div class="sidebar-note">
                 <span class="status-dot"></span>
