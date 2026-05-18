@@ -17,6 +17,34 @@ CLASS_OPTIONS = {
     "legitimate": "Legitimate only",
 }
 
+ASSISTANT_PROMPTS = [
+    {
+        "key": "dashboard",
+        "label": "Explain dashboard",
+        "question": "Explain the dashboard in simple words",
+    },
+    {
+        "key": "prediction",
+        "label": "Explain prediction",
+        "question": "How does the prediction page work?",
+    },
+    {
+        "key": "features",
+        "label": "Explain V1-V28",
+        "question": "What are V1 to V28 features?",
+    },
+    {
+        "key": "model",
+        "label": "Explain model",
+        "question": "How does the machine learning model work?",
+    },
+    {
+        "key": "viva",
+        "label": "Viva answer",
+        "question": "How should I explain this project to external examiner?",
+    },
+]
+
 
 class ProjectDependencyError(RuntimeError):
     pass
@@ -322,3 +350,73 @@ def get_plot_path(name):
         return None
     path = settings.BASE_DIR / "artifacts" / "plots" / filename
     return path if path.exists() else None
+
+
+def get_assistant_answer(question):
+    cleaned = (question or "").strip()
+    lower_question = cleaned.lower()
+    metrics = None
+
+    try:
+        metrics = load_dashboard_metrics()
+    except (FileNotFoundError, ProjectDependencyError):
+        metrics = None
+
+    if not cleaned:
+        return "Please select a question button or type a question about the dashboard, prediction page, dataset, model, or viva explanation."
+
+    if any(word in lower_question for word in ["dashboard", "kpi", "chart", "filter"]):
+        if metrics:
+            return (
+                "The dashboard is used to understand fraud patterns visually. "
+                f"It analyzes {metrics['total']} transactions, shows {metrics['fraud']} fraud cases, "
+                f"{metrics['legitimate']} legitimate transactions, and a fraud rate of {metrics['fraud_rate']:.4%}. "
+                "KPIs give quick numbers, charts show patterns, filters help focus on selected transaction groups, "
+                "and the table shows important transactions. In a presentation, say that the dashboard converts raw ML data into easy business insights."
+            )
+        return (
+            "The dashboard shows KPIs, charts, filters, model activity, and transaction tables. "
+            "It helps a user understand fraud patterns without reading raw CSV files."
+        )
+
+    if any(word in lower_question for word in ["predict", "prediction", "score", "probability", "risk"]):
+        return (
+            "The prediction page takes one transaction with 30 input features: Time, V1 to V28, and Amount. "
+            "These values are scaled using the saved scaler, then passed to the trained model. "
+            "The model returns a class label, either Fraud or Legitimate, and a fraud probability. "
+            "The auto-fill buttons load real dataset rows so the user does not need to manually type all 30 values."
+        )
+
+    if any(word in lower_question for word in ["v1", "v2", "v28", "feature", "features", "pca"]):
+        return (
+            "V1 to V28 are transformed transaction features from the credit card dataset. "
+            "They are not normal fields like name or card number. They are numerical features created using PCA for privacy. "
+            "Because they are difficult to type manually, the project provides auto-fill sample buttons using real dataset rows."
+        )
+
+    if any(word in lower_question for word in ["model", "machine learning", "algorithm", "training", "smote"]):
+        return (
+            "The machine learning part trains models on historical credit card transactions. "
+            "The target column is Class, where 0 means legitimate and 1 means fraud. "
+            "The project preprocesses data, scales numerical features, handles class imbalance using SMOTE, trains models, "
+            "and saves the best model. During prediction, Django loads that saved model and scaler to classify new transactions."
+        )
+
+    if any(word in lower_question for word in ["dataset", "data", "class", "amount", "time"]):
+        return (
+            "The dataset contains credit card transactions. Time is the transaction time, Amount is the transaction amount, "
+            "V1 to V28 are privacy-protected numerical features, and Class is the output label. "
+            "Class 0 means legitimate and Class 1 means fraud. The dataset is highly imbalanced because fraud cases are much fewer than normal transactions."
+        )
+
+    if any(word in lower_question for word in ["external", "examiner", "viva", "explain", "presentation"]):
+        return (
+            "You can explain it like this: This project detects credit card fraud using machine learning and presents the result in a Django web application. "
+            "The dashboard shows fraud statistics and charts, the prediction page classifies a selected transaction, the history page stores previous predictions, "
+            "and the AI Assistant explains project concepts in simple language. The main goal is to help users identify suspicious transactions quickly and clearly."
+        )
+
+    return (
+        "This assistant is designed for project-related questions. You can ask about the dashboard, prediction page, dataset, V1 to V28 features, "
+        "machine learning model, fraud probability, or how to explain the project to an external examiner."
+    )

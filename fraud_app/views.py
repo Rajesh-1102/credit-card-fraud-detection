@@ -9,6 +9,8 @@ from django.views.decorators.http import require_http_methods
 from .services import (
     FEATURE_ORDER,
     ProjectDependencyError,
+    ASSISTANT_PROMPTS,
+    get_assistant_answer,
     get_sample_choices,
     get_sample_features,
     get_plot_path,
@@ -91,11 +93,17 @@ def history(request):
 
 @login_required
 def assistant(request):
+    selected_question = request.POST.get("question", "") if request.method == "POST" else ""
+    answer = get_assistant_answer(selected_question)
+
     return render(
         request,
         "fraud_app/assistant.html",
         {
             "active_page": "assistant",
+            "quick_prompts": ASSISTANT_PROMPTS,
+            "selected_question": selected_question,
+            "assistant_answer": answer,
             "assistant_cards": [
                 {
                     "title": "Prediction explanation",

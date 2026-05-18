@@ -831,7 +831,8 @@ summary {
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
     min-height: 44px;
     padding: 10px 12px;
@@ -840,6 +841,12 @@ select {
     border: 1px solid #d0d7e2;
     border-radius: 12px;
     background: var(--field);
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.55;
 }
 
 select {
@@ -851,7 +858,8 @@ select {
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     outline: 3px solid rgba(37, 99, 235, 0.16);
     border-color: var(--blue);
 }
@@ -1024,6 +1032,37 @@ summary {
 .assistant-side,
 .assistant-card {
     margin-bottom: 0;
+}
+
+.assistant-question-form {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.assistant-prompt-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.prompt-chip {
+    min-height: 38px;
+    padding: 0 12px;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 800;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.prompt-chip:hover {
+    color: white;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+    border-color: transparent;
 }
 
 .assistant-message {

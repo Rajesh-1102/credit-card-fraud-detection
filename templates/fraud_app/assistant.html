@@ -15,35 +15,31 @@
     <article class="panel assistant-main">
         <div class="panel-heading">
             <div>
-                <p class="eyebrow">Assistant purpose</p>
-                <h2>What it helps with</h2>
+                <p class="eyebrow">Ask assistant</p>
+                <h2>Project explanation helper</h2>
             </div>
         </div>
+        <form method="post" class="assistant-question-form">
+            {% csrf_token %}
+            <label>
+                <span>Your question</span>
+                <textarea name="question" rows="4" placeholder="Example: How should I explain the dashboard to external examiner?">{{ selected_question }}</textarea>
+            </label>
+            <div class="assistant-prompt-grid">
+                {% for prompt in quick_prompts %}
+                <button type="submit" name="question" value="{{ prompt.question }}" class="prompt-chip">
+                    {{ prompt.label }}
+                </button>
+                {% endfor %}
+            </div>
+            <button type="submit" class="primary-action">Get explanation</button>
+        </form>
+
         <div class="assistant-message">
             <span class="assistant-avatar">AI</span>
             <div>
                 <strong>FraudDesk Assistant</strong>
-                <p>
-                    I help explain whether a transaction is low, medium, or high risk, summarize fraud probability,
-                    and suggest review actions such as identity verification or manual approval checks.
-                </p>
-            </div>
-        </div>
-        <div class="assistant-message analyst">
-            <span class="assistant-avatar analyst-avatar">U</span>
-            <div>
-                <strong>Analyst question</strong>
-                <p>Why was this transaction marked high risk?</p>
-            </div>
-        </div>
-        <div class="assistant-message">
-            <span class="assistant-avatar">AI</span>
-            <div>
-                <strong>Assistant response</strong>
-                <p>
-                    The fraud probability is elevated, so the transaction should be reviewed before approval.
-                    Check amount, unusual feature patterns, and recent fraud activity before making a decision.
-                </p>
+                <p>{{ assistant_answer }}</p>
             </div>
         </div>
     </article>
